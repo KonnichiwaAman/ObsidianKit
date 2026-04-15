@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
+import { useRouteTracking } from "@/hooks/useRouteTracking";
 
 const HomePage = lazy(async () => {
   const module = await import("@/pages/HomePage");
@@ -15,6 +16,16 @@ const CategoryPage = lazy(async () => {
 const ToolPage = lazy(async () => {
   const module = await import("@/pages/ToolPage");
   return { default: module.ToolPage };
+});
+
+const BlogPage = lazy(async () => {
+  const module = await import("@/pages/BlogPage");
+  return { default: module.BlogPage };
+});
+
+const BlogPostPage = lazy(async () => {
+  const module = await import("@/pages/BlogPostPage");
+  return { default: module.BlogPostPage };
 });
 
 const NotFoundPage = lazy(async () => {
@@ -33,19 +44,29 @@ function RouteLoader() {
   );
 }
 
+function AppRoutes() {
+  useRouteTracking();
+
+  return (
+    <Suspense fallback={<RouteLoader />}>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/category/:categoryId" element={<CategoryPage />} />
+          <Route path="/tool/:toolId" element={<ToolPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </Suspense>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<RouteLoader />}>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/category/:categoryId" element={<CategoryPage />} />
-            <Route path="/tool/:toolId" element={<ToolPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
-        </Routes>
-      </Suspense>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

@@ -136,6 +136,7 @@ body * {
 a,
 button,
 [role="button"],
+[role="option"],
 summary,
 select,
 label[for] {
@@ -146,6 +147,21 @@ input,
 textarea,
 [contenteditable="true"] {
   cursor: text;
+}
+
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"],
+input[type="file"] {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
 }
 
 /* ── Light Mode Overrides ── */

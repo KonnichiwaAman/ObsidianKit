@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "generate:seo": "node scripts/generate-seo-assets.mjs",
+    "generate:prerender-routes": "node scripts/generate-prerender-routes.mjs",
+    "build": "npm run generate:prerender-routes && npm run generate:seo && tsc -b && vite build",
+    "build:analyze": "cross-env ANALYZE=true npm run build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -26,6 +29,7 @@
     "qrcode": "^1.5.4",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-helmet-async": "^3.0.0",
     "react-router-dom": "^7.14.1",
     "tesseract.js": "^7.0.0",
     "zustand": "^5.0.12"
@@ -37,10 +41,12 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "cross-env": "^10.1.0",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "rollup-plugin-visualizer": "^6.0.3",
     "tailwindcss": "^4.2.2",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.0",

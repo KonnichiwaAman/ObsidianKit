@@ -1,6 +1,10 @@
 {
   "name": "ObsidianKit",
   "short_name": "ObsidianKit",
+  "description": "Private browser-based utility suite with 100% local file processing.",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +19,8 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a",
+  "display": "standalone",
+  "orientation": "portrait-primary"
 }

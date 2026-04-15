@@ -20,6 +20,7 @@ export function SearchBar({
 
   const isHero = variant === "hero";
   const showDropdown = isFocused && query.trim().length > 0;
+  const listboxId = isHero ? "hero-search-results" : "navbar-search-results";
 
   useEffect(() => {
     function handleClickOutside(e: PointerEvent) {
@@ -67,6 +68,11 @@ export function SearchBar({
           )}
           id={isHero ? "hero-search" : "navbar-search"}
           type="text"
+          role="combobox"
+          aria-label="Search ObsidianKit tools"
+          aria-expanded={showDropdown}
+          aria-controls={listboxId}
+          aria-autocomplete="list"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(event) => {
@@ -108,16 +114,18 @@ export function SearchBar({
                      shadow-2xl"
         >
           {results.length === 0 ? (
-            <div className="px-4 py-6 text-center text-sm text-[var(--color-text-muted)]">
+            <div role="status" className="px-4 py-6 text-center text-sm text-[var(--color-text-muted)]">
               No tools found for "{query}"
             </div>
           ) : (
-            <ul role="listbox">
+            <ul id={listboxId} role="listbox" aria-label="Search results">
               {results.map((tool) => {
                 const Icon = tool.icon;
                 return (
                   <li key={tool.id}>
                     <button
+                      role="option"
+                      aria-label={`Open ${tool.name}`}
                       type="button"
                       onClick={() => {
                         if (!isSafeInternalPath(tool.path)) return;

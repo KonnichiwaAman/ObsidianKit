@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { HeroFlowAnimation } from "@/components/HeroFlowAnimation";
+import { AdSlot } from "@/components/monetization/AdSlot";
+import { SupportBanner } from "@/components/monetization/SupportBanner";
+import { SeoHead } from "@/components/seo/SeoHead";
 import { categories } from "@/data/categories";
 import { getToolById } from "@/data/tools";
+import { buildHomeSeo } from "@/lib/seo";
 import type { Tool } from "@/types";
 import {
   ArrowRight,
@@ -47,14 +50,19 @@ const valueProps = [
   },
 ];
 
+const HeroFlowAnimation = lazy(async () => {
+  const module = await import("@/components/HeroFlowAnimation");
+  return { default: module.HeroFlowAnimation };
+});
+
 export function HomePage() {
   const [showHeroAnimation, setShowHeroAnimation] = useState(true);
 
   const totalTools = categories.reduce((sum, category) => sum + category.toolCount, 0);
-
-  useEffect(() => {
-    document.title = "ObsidianKit — One Place. Every Tool.";
-  }, []);
+  const seoMetadata = useMemo(
+    () => buildHomeSeo(totalTools, categories.length),
+    [totalTools],
+  );
 
   useEffect(() => {
     const mobileAnimationQuery = window.matchMedia(
@@ -90,12 +98,19 @@ export function HomePage() {
   }
 
   return (
-    <div className="relative overflow-hidden bg-[var(--color-bg-primary)]">
+    <>
+      <SeoHead metadata={seoMetadata} />
+
+      <div className="relative overflow-hidden bg-[var(--color-bg-primary)]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_75%_at_15%_0%,rgba(181,181,181,0.08),transparent_60%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_70%_at_85%_20%,rgba(120,120,120,0.08),transparent_70%)]" />
 
       <section className="relative isolate overflow-hidden border-b border-[var(--color-border-primary)]">
-        {showHeroAnimation ? <HeroFlowAnimation className="absolute inset-0" iconCount={16} /> : null}
+        {showHeroAnimation ? (
+          <Suspense fallback={null}>
+            <HeroFlowAnimation className="absolute inset-0" iconCount={16} />
+          </Suspense>
+        ) : null}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(10,10,10,0.1)] to-[var(--color-bg-primary)]" />
 
         <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-14 sm:px-6 sm:pb-24 sm:pt-20 lg:px-8 lg:pb-28 lg:pt-24">
@@ -312,6 +327,14 @@ export function HomePage() {
         </div>
       </section>
 
+      <section className="content-visibility-auto mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
+        <AdSlot />
+      </section>
+
+      <section className="content-visibility-auto mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
+        <SupportBanner />
+      </section>
+
       <section className="content-visibility-auto px-4 pb-14 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
         <div className="landing-reveal landing-reveal-delay-2 mx-auto max-w-6xl rounded-3xl border border-[var(--color-border-primary)] bg-[linear-gradient(145deg,var(--color-bg-secondary),var(--color-bg-card))] px-5 py-10 text-center sm:px-10 sm:py-14">
           <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] text-[var(--color-text-secondary)]">
@@ -343,6 +366,7 @@ export function HomePage() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

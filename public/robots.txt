@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /404
+Host: obsidiankit.com
+Sitemap: https://obsidiankit.com/sitemap.xml

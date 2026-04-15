@@ -1,8 +1,14 @@
-import { useEffect, Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Upload, Loader2 } from "lucide-react";
+import { AdSlot } from "@/components/monetization/AdSlot";
+import { SupportBanner } from "@/components/monetization/SupportBanner";
+import { SeoHead } from "@/components/seo/SeoHead";
+import { ToolSchemaJsonLd } from "@/components/seo/ToolSchemaJsonLd";
+import { ToolSeoContent } from "@/components/seo/ToolSeoContent";
 import { getToolById } from "@/data/tools";
 import { getCategoryById } from "@/data/categories";
+import { buildNotFoundSeo, buildToolSeo } from "@/lib/seo";
 import { ToolErrorBoundary } from "@/components/ToolErrorBoundary";
 import toolRegistry from "@/tools";
 
@@ -39,86 +45,106 @@ export function ToolPage() {
   const category = tool ? getCategoryById(tool.categoryId) : undefined;
   const ToolComponent = toolId ? toolRegistry[toolId] ?? null : null;
 
-  useEffect(() => {
-    document.title = tool
-      ? `${tool.name} — ObsidianKit`
-      : "Tool Not Found — ObsidianKit";
-  }, [tool]);
+  const pagePath = tool ? tool.path : `/tool/${toolId ?? ""}`;
+  const seoMetadata = useMemo(
+    () => (tool ? buildToolSeo(tool, category) : buildNotFoundSeo(pagePath)),
+    [tool, category, pagePath],
+  );
 
   if (!tool) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
-          Tool not found
-        </h1>
-        <Link
-          to="/"
-          className="mt-4 inline-flex items-center gap-2 text-sm text-[var(--color-text-secondary)]
-                     transition-colors hover:text-[var(--color-text-primary)]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Link>
-      </div>
+      <>
+        <SeoHead metadata={seoMetadata} />
+
+        <div className="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
+          <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
+            Tool not found
+          </h1>
+          <Link
+            to="/"
+            className="mobile-tap-feedback mt-4 inline-flex items-center gap-2 text-sm text-[var(--color-text-secondary)]
+                     transition-colors active:scale-[0.99] md:hover:text-[var(--color-text-primary)]"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Link>
+        </div>
+      </>
     );
   }
 
   const Icon = tool.icon;
 
   return (
-    <div className="mx-auto max-w-4xl py-8 pl-[max(1rem,var(--safe-area-left))] pr-[max(1rem,var(--safe-area-right))] sm:px-6 sm:py-10 lg:px-8">
-      {/* Back link */}
-      {category && (
-        <Link
-          to={category.path}
-          className="inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)]
-                     transition-colors duration-200 hover:text-[var(--color-text-primary)]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to {category.name}
-        </Link>
-      )}
+    <>
+      <SeoHead metadata={seoMetadata} />
+      <ToolSchemaJsonLd
+        name={tool.name}
+        description={tool.description}
+        applicationCategory={category?.name ?? tool.categoryId}
+        path={tool.path}
+      />
 
-      {/* Tool Header */}
-      <div className="mt-5 flex items-start gap-3.5 sm:mt-6 sm:items-center sm:gap-4">
-        <div
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl
+      <div className="mx-auto max-w-4xl py-8 pl-[max(1rem,var(--safe-area-left))] pr-[max(1rem,var(--safe-area-right))] sm:px-6 sm:py-10 lg:px-8">
+        <article>
+          {category && (
+            <Link
+              to={category.path}
+              aria-label={`Back to ${category.name}`}
+              className="inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)]
+                     transition-colors duration-200 md:hover:text-[var(--color-text-primary)]"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to {category.name}
+            </Link>
+          )}
+
+          <header className="mt-5 flex items-start gap-3.5 sm:mt-6 sm:items-center sm:gap-4">
+            <div
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl
                       border border-[var(--color-border-primary)] bg-[var(--color-bg-card)]
                       text-[var(--color-text-secondary)] sm:h-12 sm:w-12"
-        >
-          <Icon className="h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="text-lg font-bold text-[var(--color-text-primary)] sm:text-xl">
-            {tool.name}
-          </h1>
-          <p className="text-sm text-[var(--color-text-muted)]">
-            {tool.description}
-          </p>
-        </div>
-      </div>
+            >
+              <Icon className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-[var(--color-text-primary)] sm:text-xl">
+                {tool.name}
+              </h1>
+              <p className="text-sm text-[var(--color-text-muted)]">{tool.description}</p>
+            </div>
+          </header>
 
-      {/* Tool Content */}
-      <div className="mt-6 sm:mt-8">
-        <ToolErrorBoundary resetKey={tool.id}>
-          {ToolComponent ? (
-            <Suspense fallback={<ToolLoader />}>
-              <ToolComponent />
-            </Suspense>
-          ) : (
-            <ToolPlaceholder />
-          )}
-        </ToolErrorBoundary>
-      </div>
+          <section className="mt-6 sm:mt-8" aria-label={`${tool.name} workspace`} aria-live="polite">
+            <ToolErrorBoundary resetKey={tool.id}>
+              {ToolComponent ? (
+                <Suspense fallback={<ToolLoader />}>
+                  <ToolComponent />
+                </Suspense>
+              ) : (
+                <ToolPlaceholder />
+              )}
+            </ToolErrorBoundary>
+          </section>
 
-      {/* Privacy Notice */}
-      <div className="mt-5 rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] px-4 py-3.5 sm:mt-6 sm:px-5 sm:py-4">
-        <p className="text-xs leading-relaxed text-[var(--color-text-muted)]">
-          <span className="font-medium text-[var(--color-text-secondary)]">Privacy:</span>{" "}
-          This tool runs entirely in your browser. Your files never leave your device.
-          No data is sent to any server.
-        </p>
+          <section className="mt-5 rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] px-4 py-3.5 sm:mt-6 sm:px-5 sm:py-4">
+            <p className="text-xs leading-relaxed text-[var(--color-text-muted)]">
+              <span className="font-medium text-[var(--color-text-secondary)]">Privacy:</span>{" "}
+              This tool runs entirely in your browser. Your files never leave your device.
+              No data is sent to any server.
+            </p>
+          </section>
+
+          <ToolSeoContent
+            toolName={tool.name}
+            categoryName={category?.name ?? "Utilities"}
+            toolDescription={tool.description}
+          />
+
+          <AdSlot className="mt-6" />
+          <SupportBanner className="mt-6" compact />
+        </article>
       </div>
-    </div>
+    </>
   );
 }

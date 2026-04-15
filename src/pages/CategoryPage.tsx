@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Grid2x2, Search } from "lucide-react";
+import { AdSlot } from "@/components/monetization/AdSlot";
+import { SeoHead } from "@/components/seo/SeoHead";
 import { getCategoryById } from "@/data/categories";
 import { getToolsByCategory } from "@/data/tools";
+import { buildCategorySeo, buildNotFoundSeo } from "@/lib/seo";
 import { ToolCard } from "@/components/ui/ToolCard";
 
 export function CategoryPage() {
@@ -28,27 +31,31 @@ export function CategoryPage() {
     });
   }, [categoryTools, query]);
 
-  useEffect(() => {
-    document.title = category
-      ? `${category.name} — ObsidianKit`
-      : "Category Not Found — ObsidianKit";
-  }, [category]);
+  const pagePath = category ? category.path : `/category/${categoryId ?? ""}`;
+  const seoMetadata = useMemo(
+    () => (category ? buildCategorySeo(category, categoryTools) : buildNotFoundSeo(pagePath)),
+    [category, categoryTools, pagePath],
+  );
 
   if (!category) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
-          Category not found
-        </h1>
-        <Link
-          to="/"
-          className="mobile-tap-feedback mt-4 inline-flex items-center gap-2 text-sm text-[var(--color-text-secondary)]
+      <>
+        <SeoHead metadata={seoMetadata} />
+
+        <div className="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
+          <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
+            Category not found
+          </h1>
+          <Link
+            to="/"
+            className="mobile-tap-feedback mt-4 inline-flex items-center gap-2 text-sm text-[var(--color-text-secondary)]
                      transition-colors active:scale-[0.985] md:hover:text-[var(--color-text-primary)]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Link>
-      </div>
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Link>
+        </div>
+      </>
     );
   }
 
@@ -57,7 +64,10 @@ export function CategoryPage() {
   const visibleTools = filteredTools.length;
 
   return (
-    <div className="relative mx-auto max-w-7xl py-7 pl-[max(1rem,var(--safe-area-left))] pr-[max(1rem,var(--safe-area-right))] sm:px-6 sm:py-9 lg:px-8 lg:py-12">
+    <>
+      <SeoHead metadata={seoMetadata} />
+
+      <div className="relative mx-auto max-w-7xl py-7 pl-[max(1rem,var(--safe-area-left))] pr-[max(1rem,var(--safe-area-right))] sm:px-6 sm:py-9 lg:px-8 lg:py-12">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-44 bg-[radial-gradient(circle_at_top,rgba(161,161,170,0.12),transparent_72%)] sm:h-56" />
 
       <div>
@@ -114,6 +124,7 @@ export function CategoryPage() {
               <input
                 id="category-tool-search"
                 type="text"
+                aria-label={`Search ${category.name} tools`}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={`Search in ${category.name}...`}
@@ -137,7 +148,12 @@ export function CategoryPage() {
             </div>
           )}
         </section>
+
+        <section className="mt-8 sm:mt-10">
+          <AdSlot />
+        </section>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

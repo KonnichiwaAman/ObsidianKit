@@ -1,15 +1,38 @@
+import { Link } from "react-router-dom";
+import { SupportBanner } from "@/components/monetization/SupportBanner";
+
 export function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="safe-area-inset-bottom border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">
       <div className="mx-auto max-w-7xl py-8 pl-[max(1rem,var(--safe-area-left))] pr-[max(1rem,var(--safe-area-right))] sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-[var(--color-text-muted)]">
-            ObsidianKit — 100% client-side. No uploads. No tracking. Free forever.
+            ObsidianKit is 100% client-side by design. Files stay on your device.
           </p>
-          <p className="text-xs text-[var(--color-text-muted)]">
-            Built with privacy in mind.
-          </p>
+
+          <nav className="flex items-center gap-4" aria-label="Footer links">
+            <Link
+              to="/blog"
+              className="text-xs text-[var(--color-text-muted)] transition-colors md:hover:text-[var(--color-text-primary)]"
+            >
+              Blog
+            </Link>
+            <a
+              href="/sitemap.xml"
+              className="text-xs text-[var(--color-text-muted)] transition-colors md:hover:text-[var(--color-text-primary)]"
+            >
+              Sitemap
+            </a>
+          </nav>
         </div>
+
+        <SupportBanner compact className="mt-5" />
+
+        <p className="mt-5 text-[11px] text-[var(--color-text-muted)]">
+          Copyright {currentYear} ObsidianKit. Built for private, fast productivity workflows.
+        </p>
       </div>
     </footer>
   );

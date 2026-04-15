@@ -109,6 +109,7 @@ function ToolCardComponent({ tool }: ToolCardProps) {
 
       <button
         type="button"
+        aria-label={`Open ${tool.name}`}
         ref={buttonRef}
         onClick={handleOpen}
         className={`mobile-tap-feedback relative mt-5 flex w-full items-center justify-center gap-1.5 overflow-hidden rounded-xl border

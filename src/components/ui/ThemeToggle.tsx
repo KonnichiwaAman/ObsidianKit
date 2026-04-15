@@ -7,8 +7,10 @@ export function ThemeToggle() {
   return (
     <button
       id="theme-toggle"
+      type="button"
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
       className="mobile-tap-feedback relative flex h-11 w-11 items-center justify-center rounded-lg
                  border border-[var(--color-border-primary)] bg-[var(--color-bg-card)]
                  text-[var(--color-text-secondary)] transition-colors duration-200
