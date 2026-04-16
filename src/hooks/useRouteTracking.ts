@@ -19,6 +19,14 @@ export function useRouteTracking() {
   }, []);
 
   useEffect(() => {
+    if (location.hash) return;
+
+    defer(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    });
+  }, [location.pathname, location.search, location.hash]);
+
+  useEffect(() => {
     const path = `${location.pathname}${location.search}${location.hash}`;
     defer(() => {
       trackPageView(path, document.title);

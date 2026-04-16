@@ -77,25 +77,7 @@ export function AdSlot({ slot, className }: AdSlotProps) {
     };
   }, [resolvedSlot]);
 
-  if (!ADSENSE_ENABLED || !resolvedSlot) {
-    return (
-      <aside
-        aria-label="Advertisement"
-        className={cn(
-          "rounded-2xl border border-dashed border-[var(--color-border-primary)] bg-[var(--color-bg-card)] p-4 sm:p-5",
-          className,
-        )}
-      >
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-muted)]">
-          Advertisement
-        </p>
-        <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-secondary)]">
-          Monetization slot ready. Add your AdSense client and slot IDs in environment
-          variables to serve ads.
-        </p>
-      </aside>
-    );
-  }
+  if (!ADSENSE_ENABLED || !resolvedSlot) return null;
 
   return (
     <aside

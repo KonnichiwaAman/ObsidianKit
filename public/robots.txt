@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /404
+Disallow: /sitemap.xml
 Host: obsidiankit.com
-Sitemap: https://obsidiankit.com/sitemap.xml
+# Generated: 2026-04-16

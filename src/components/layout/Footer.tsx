@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { SupportBanner } from "@/components/monetization/SupportBanner";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -19,16 +18,8 @@ export function Footer() {
             >
               Blog
             </Link>
-            <a
-              href="/sitemap.xml"
-              className="text-xs text-[var(--color-text-muted)] transition-colors md:hover:text-[var(--color-text-primary)]"
-            >
-              Sitemap
-            </a>
           </nav>
         </div>
-
-        <SupportBanner compact className="mt-5" />
 
         <p className="mt-5 text-[11px] text-[var(--color-text-muted)]">
           Copyright {currentYear} ObsidianKit. Built for private, fast productivity workflows.
