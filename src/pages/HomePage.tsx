@@ -4,11 +4,13 @@ import { AdSlot } from "@/components/monetization/AdSlot";
 import { SupportBanner } from "@/components/monetization/SupportBanner";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { categories } from "@/data/categories";
+import { publishedBlogPosts } from "@/data/blogPosts";
 import { getToolById } from "@/data/tools";
 import { buildHomeSeo } from "@/lib/seo";
 import type { Tool } from "@/types";
 import {
   ArrowRight,
+  BookOpen,
   CircleDollarSign,
   Lock,
   ScanSearch,
@@ -90,12 +92,7 @@ export function HomePage() {
     };
   }, []);
 
-  // Primary CTA smooth-scrolls to category grid to keep users on the landing flow.
-  function scrollToCategories() {
-    document
-      .getElementById("browse-categories")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  const latestPosts = publishedBlogPosts.slice(0, 3);
 
   return (
     <>
@@ -132,27 +129,27 @@ export function HomePage() {
               </p>
 
               <div className="mt-9 flex w-full max-w-xl flex-col gap-3 sm:flex-row">
-                <button
-                  onClick={scrollToCategories}
+                <Link
+                  to="/tools"
                   className="group mobile-tap-feedback inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border-hover)] bg-[var(--color-text-primary)] px-7 text-sm font-semibold text-[var(--color-bg-primary)] transition-all duration-300 active:scale-[0.985] sm:h-12 sm:w-auto sm:text-[15px] md:hover:scale-[1.015] md:hover:opacity-90"
                 >
                   Browse All {totalTools}+ Tools
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 md:group-hover:translate-x-0.5" />
-                </button>
+                </Link>
 
                 <Link
-                  to="/tool/image-resizer"
+                  to="/tool/pdf-compressor"
                   className="mobile-tap-feedback inline-flex h-12 w-full items-center justify-center rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-card)]/90 px-7 text-sm font-semibold text-[var(--color-text-primary)] transition-colors duration-300 active:scale-[0.985] sm:h-12 sm:w-auto sm:text-[15px] md:hover:border-[var(--color-border-hover)] md:hover:bg-[var(--color-bg-card-hover)]"
                 >
-                  Try Image Resizer
+                  Try PDF Compressor
                 </Link>
               </div>
 
               <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--color-text-muted)] sm:text-xs">
                 <span>Zero Uploads</span>
-                <span className="text-[var(--color-border-hover)]">•</span>
+                <span className="text-[var(--color-border-hover)]">/</span>
                 <span>No Sign-Up</span>
-                <span className="text-[var(--color-border-hover)]">•</span>
+                <span className="text-[var(--color-border-hover)]">/</span>
                 <span>Private by Design</span>
               </div>
             </div>
@@ -331,6 +328,54 @@ export function HomePage() {
         <AdSlot />
       </section>
 
+      {latestPosts.length > 0 ? (
+        <section className="content-visibility-auto mx-auto max-w-7xl px-4 pb-14 sm:px-6 sm:pb-16 lg:px-8">
+          <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="mb-3 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+                <BookOpen className="h-3.5 w-3.5" />
+                Latest Guides
+              </p>
+              <h2 className="home-section-serif text-4xl font-semibold tracking-tight text-[var(--color-text-primary)] sm:text-5xl">
+                Practical Workflows
+              </h2>
+            </div>
+
+            <Link
+              to="/blog"
+              className="mobile-tap-feedback inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-text-secondary)] transition-colors active:scale-[0.99] md:hover:text-[var(--color-text-primary)]"
+            >
+              View blog
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {latestPosts.map((post) => (
+              <Link
+                key={post.slug}
+                to={`/blog/${post.slug}`}
+                className="group mobile-tap-feedback rounded-2xl border border-[var(--color-border-primary)] bg-[var(--color-bg-card)] p-5 transition-all active:scale-[0.985] md:hover:border-[var(--color-border-hover)] md:hover:bg-[var(--color-bg-card-hover)]"
+              >
+                <p className="text-[11px] uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+                  {post.publishedAt} - {post.readingMinutes} min read
+                </p>
+                <h3 className="mt-3 text-lg font-semibold tracking-tight text-[var(--color-text-primary)]">
+                  {post.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-secondary)]">
+                  {post.description}
+                </p>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-text-primary)]">
+                  Read guide
+                  <ArrowRight className="h-4 w-4 transition-transform md:group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="content-visibility-auto mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
         <SupportBanner />
       </section>
@@ -349,13 +394,13 @@ export function HomePage() {
           </p>
 
           <div className="mx-auto mt-8 flex w-full max-w-md flex-col items-center justify-center gap-3 sm:mt-9 sm:max-w-none sm:flex-row sm:gap-4">
-            <button
-              onClick={scrollToCategories}
+            <Link
+              to="/tools"
               className="group mobile-tap-feedback inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border-hover)] bg-[var(--color-text-primary)] px-7 text-sm font-semibold text-[var(--color-bg-primary)] transition-all duration-300 active:scale-[0.985] sm:w-auto md:hover:scale-[1.015] md:hover:opacity-90"
             >
               Browse All {totalTools}+ Tools
               <ArrowRight className="h-4 w-4 transition-transform duration-300 md:group-hover:translate-x-0.5" />
-            </button>
+            </Link>
 
             <Link
               to="/tool/password-generator"

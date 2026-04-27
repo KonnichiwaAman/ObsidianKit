@@ -6,7 +6,6 @@ import {
   TWITTER_HANDLE,
 } from "@/lib/siteConfig";
 import { toAbsoluteUrl } from "@/lib/seo";
-import type { JsonLdObject } from "@/lib/seo";
 
 interface SEOProps {
   title: string;
@@ -16,7 +15,6 @@ interface SEOProps {
   imageUrl?: string;
   ogType?: "website" | "article";
   noindex?: boolean;
-  structuredData?: JsonLdObject[];
 }
 
 const INDEX_ROBOTS = "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
@@ -49,7 +47,6 @@ export function SEO({
   imageUrl,
   ogType,
   noindex,
-  structuredData,
 }: SEOProps) {
   const canonicalUrl = toAbsoluteUrl(path);
   const ogImage = normalizeImageUrl(imageUrl);
@@ -96,12 +93,6 @@ export function SEO({
       {normalizedTwitterHandle ? (
         <meta name="twitter:creator" content={normalizedTwitterHandle} />
       ) : null}
-
-      {structuredData?.map((entry, index) => (
-        <script key={`jsonld-${index}`} type="application/ld+json">
-          {JSON.stringify(entry)}
-        </script>
-      ))}
     </Helmet>
   );
 }

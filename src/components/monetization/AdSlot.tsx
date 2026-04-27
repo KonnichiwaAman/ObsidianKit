@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ADSENSE_CLIENT, ADSENSE_ENABLED, ADSENSE_SLOT_INLINE } from "@/lib/siteConfig";
+import {
+  CONSENT_EVENT,
+  isAdvertisingConsentGranted,
+} from "@/lib/consent";
 import { cn } from "@/lib/utils";
 
 declare global {
@@ -49,9 +53,29 @@ export function AdSlot({ slot, className }: AdSlotProps) {
   const adRef = useRef<HTMLModElement | null>(null);
   const hasRequestedAdRef = useRef(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [hasAdConsent, setHasAdConsent] = useState(() => isAdvertisingConsentGranted());
 
   useEffect(() => {
-    if (!ADSENSE_ENABLED || !resolvedSlot) return;
+    const syncConsent = () => {
+      const consentGranted = isAdvertisingConsentGranted();
+      setHasAdConsent(consentGranted);
+
+      if (!consentGranted) {
+        hasRequestedAdRef.current = false;
+      }
+    };
+
+    window.addEventListener("storage", syncConsent);
+    window.addEventListener(CONSENT_EVENT, syncConsent as EventListener);
+
+    return () => {
+      window.removeEventListener("storage", syncConsent);
+      window.removeEventListener(CONSENT_EVENT, syncConsent as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!ADSENSE_ENABLED || !resolvedSlot || !hasAdConsent) return;
 
     let active = true;
 
@@ -75,9 +99,9 @@ export function AdSlot({ slot, className }: AdSlotProps) {
     return () => {
       active = false;
     };
-  }, [resolvedSlot]);
+  }, [resolvedSlot, hasAdConsent]);
 
-  if (!ADSENSE_ENABLED || !resolvedSlot) return null;
+  if (!ADSENSE_ENABLED || !resolvedSlot || !hasAdConsent) return null;
 
   return (
     <aside

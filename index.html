@@ -2,11 +2,7 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob: https://cdn.jsdelivr.net https://pagead2.googlesyndication.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://www.google-analytics.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com; media-src 'self' data: blob:; worker-src 'self' blob:; frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com; connect-src 'self' https: ws: wss: blob: data: https://www.google-analytics.com https://region1.google-analytics.com https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com https://tpc.googlesyndication.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
-    />
-    <meta name="referrer" content="no-referrer" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -15,64 +11,37 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="title" content="ObsidianKit - Free Online Tools (Private & Client-Side)" />
-    <meta name="description" content="ObsidianKit — Fast, free, and private. Hundreds of everyday utilities running 100% client-side in your browser." />
+    <meta name="description" content="ObsidianKit - Fast, free, and private browser-based PDF, image, video, calculator, and productivity tools." />
     <meta name="keywords" content="ObsidianKit, free online tools, PDF tools, image converter, video tools, calculators, client-side utilities, privacy-first tools" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <meta name="author" content="ObsidianKit" />
+    <meta name="application-name" content="ObsidianKit" />
     <meta name="theme-color" content="#0a0a0a" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="canonical" href="https://obsidiankit.com/" />
-    <link rel="alternate" hreflang="en" href="https://obsidiankit.com/" />
-    <link rel="alternate" hreflang="x-default" href="https://obsidiankit.com/" />
+    <link rel="canonical" href="https://obsidiankit.me/" />
+    <link rel="alternate" hreflang="en" href="https://obsidiankit.me/" />
+    <link rel="alternate" hreflang="x-default" href="https://obsidiankit.me/" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
     <meta property="og:site_name" content="ObsidianKit" />
     <meta property="og:locale" content="en" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="ObsidianKit - Free Online Tools (Private & Client-Side)" />
     <meta property="og:description" content="Fast browser-based PDF, image, video, calculator, and productivity tools with 100% client-side processing." />
-    <meta property="og:url" content="https://obsidiankit.com/" />
-    <meta property="og:image" content="https://obsidiankit.com/web-app-manifest-512x512.png" />
+    <meta property="og:url" content="https://obsidiankit.me/" />
+    <meta property="og:image" content="https://obsidiankit.me/web-app-manifest-512x512.png" />
     <meta property="og:image:alt" content="ObsidianKit" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="ObsidianKit - Free Online Tools" />
     <meta name="twitter:description" content="Private, fast, and free utility tools that run in your browser." />
-    <meta name="twitter:image" content="https://obsidiankit.com/web-app-manifest-512x512.png" />
+    <meta name="twitter:image" content="https://obsidiankit.me/web-app-manifest-512x512.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:wght@500;600;700&display=swap" rel="stylesheet" />
-
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "ObsidianKit",
-        "url": "https://obsidiankit.com/",
-        "inLanguage": "en",
-        "description": "Fast, free, private browser-based utilities with client-side processing."
-      }
-    </script>
-
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "ObsidianKit",
-        "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "Any",
-        "url": "https://obsidiankit.com/",
-        "description": "A client-side suite of tools for PDF, image, video, conversion, and productivity tasks.",
-        "isAccessibleForFree": true,
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      }
-    </script>
 
     <title>ObsidianKit</title>
   </head>

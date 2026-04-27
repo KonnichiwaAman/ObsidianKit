@@ -5,7 +5,7 @@ interface CurrencyRates {
   base: string;
   timestamp: number;
   rates: Record<string, number>;
-  source: "live" | "fallback";
+  source: "live" | "fallback" | "cached";
 }
 
 const FALLBACK_RATES: CurrencyRates = {
@@ -59,6 +59,8 @@ async function fetchRates(signal: AbortSignal): Promise<CurrencyRates> {
     throw new Error("Rate provider unavailable");
   }
 
+  const isCached = response.headers.get("X-Is-Stale-Cache") === "true";
+
   const data = (await response.json()) as {
     result?: string;
     rates?: Record<string, number>;
@@ -85,7 +87,7 @@ async function fetchRates(signal: AbortSignal): Promise<CurrencyRates> {
     base: "USD",
     rates: filteredRates,
     timestamp: (data.time_last_update_unix ?? Date.now() / 1000) * 1000,
-    source: "live",
+    source: isCached ? "cached" : "live",
   };
 }
 
@@ -132,7 +134,11 @@ export default function CurrencyConverter() {
           ? "Rate request timed out. Using built-in fallback rates."
           : "Could not fetch live rates. Using built-in fallback rates.",
       );
-      setRates((previous) => ({ ...previous, source: "fallback" }));
+      setRates((previous) => ({
+        ...previous,
+        source: "fallback",
+        timestamp: Date.now(),
+      }));
     } finally {
       window.clearTimeout(timeoutId);
 
@@ -286,6 +292,9 @@ export default function CurrencyConverter() {
               <p className="text-xs text-[var(--color-text-muted)] mt-1">
                 Last rate update: {new Date(rates.timestamp).toLocaleString()}
               </p>
+              <p className="mt-1 text-[11px] text-[var(--color-text-muted)]">
+                Source: {rates.source === "fallback" ? "Built-in fallback estimates" : rates.source === "cached" ? "Cached exchange feed (Offline)" : "Live exchange feed"}
+              </p>
             </div>
             <button
               onClick={handleCopy}
@@ -326,11 +335,14 @@ export default function CurrencyConverter() {
         </div>
       </div>
 
-      {(rateError || rates.source === "fallback") && (
+      {(rateError || rates.source === "fallback" || rates.source === "cached") && (
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3">
           <p className="inline-flex items-start gap-2 text-xs text-amber-200">
             <AlertTriangle className="h-4 w-4 shrink-0" />
-            {rateError ?? "Using bundled fallback exchange rates. Refresh when online for latest rates."}
+            {rateError ?? 
+              (rates.source === "cached" 
+                ? "You are offline. Using cached exchange rates from your last visit." 
+                : "Using bundled fallback exchange rates. Refresh when online for latest rates.")}
           </p>
         </div>
       )}

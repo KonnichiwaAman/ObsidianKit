@@ -4,7 +4,6 @@ import { ArrowLeft, Upload, Loader2 } from "lucide-react";
 import { AdSlot } from "@/components/monetization/AdSlot";
 import { SupportBanner } from "@/components/monetization/SupportBanner";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { ToolSchemaJsonLd } from "@/components/seo/ToolSchemaJsonLd";
 import { ToolSeoContent } from "@/components/seo/ToolSeoContent";
 import { getToolById } from "@/data/tools";
 import { getCategoryById } from "@/data/categories";
@@ -78,12 +77,6 @@ export function ToolPage() {
   return (
     <>
       <SeoHead metadata={seoMetadata} />
-      <ToolSchemaJsonLd
-        name={tool.name}
-        description={tool.description}
-        applicationCategory={category?.name ?? tool.categoryId}
-        path={tool.path}
-      />
 
       <div className="mx-auto max-w-4xl py-8 pl-[max(1rem,var(--safe-area-left))] pr-[max(1rem,var(--safe-area-right))] sm:px-6 sm:py-10 lg:px-8">
         <article>
@@ -130,8 +123,9 @@ export function ToolPage() {
           <section className="mt-5 rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] px-4 py-3.5 sm:mt-6 sm:px-5 sm:py-4">
             <p className="text-xs leading-relaxed text-[var(--color-text-muted)]">
               <span className="font-medium text-[var(--color-text-secondary)]">Privacy:</span>{" "}
-              This tool runs entirely in your browser. Your files never leave your device.
-              No data is sent to any server.
+              File processing for this tool runs locally in your browser. Your selected files stay on
+              your device, while optional analytics, ads, or external APIs may still make network
+              requests.
             </p>
           </section>
 

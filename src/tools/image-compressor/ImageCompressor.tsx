@@ -533,7 +533,9 @@ export default function ImageCompressor() {
 
             <div
               ref={cropContainerRef}
-              className={`relative overflow-hidden rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-input)] ${cropEnabled ? "cursor-crosshair" : ""}`}
+              className={`relative select-none overflow-hidden rounded-xl border border-[var(--color-border-primary)] bg-[var(--color-bg-input)] ${
+                cropEnabled ? "touch-none cursor-crosshair" : ""
+              }`}
               onPointerDown={handleCropPointerDown}
               onPointerMove={handleCropPointerMove}
               onPointerUp={handleCropPointerUp}

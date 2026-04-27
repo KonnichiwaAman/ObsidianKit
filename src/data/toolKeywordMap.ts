@@ -1,4 +1,4 @@
-import type { Tool } from "@/types";
+import type { Tool } from "../types";
 
 const HIGH_INTENT_OVERRIDES: Record<string, string[]> = {
   "pdf-compressor": [

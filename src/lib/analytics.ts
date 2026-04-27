@@ -1,4 +1,5 @@
 import { GA4_MEASUREMENT_ID, SITE_URL } from "@/lib/siteConfig";
+import { isAnalyticsConsentGranted } from "@/lib/consent";
 
 declare global {
   interface Window {
@@ -54,6 +55,7 @@ function loadGaScript(measurementId: string): Promise<void> {
 export function initAnalytics() {
   if (!GA4_MEASUREMENT_ID || analyticsInitialized || analyticsDisabled) return;
   if (typeof window === "undefined") return;
+  if (!isAnalyticsConsentGranted()) return;
 
   if (isDoNotTrackEnabled()) {
     analyticsDisabled = true;
@@ -81,6 +83,7 @@ export function initAnalytics() {
 export function trackPageView(path: string, title?: string) {
   if (!GA4_MEASUREMENT_ID || analyticsDisabled) return;
   if (typeof window === "undefined") return;
+  if (!isAnalyticsConsentGranted()) return;
 
   if (!analyticsInitialized) {
     initAnalytics();
@@ -108,6 +111,7 @@ export function trackEvent(
 ) {
   if (!GA4_MEASUREMENT_ID || analyticsDisabled) return;
   if (typeof window === "undefined") return;
+  if (!isAnalyticsConsentGranted()) return;
 
   if (!analyticsInitialized) {
     initAnalytics();

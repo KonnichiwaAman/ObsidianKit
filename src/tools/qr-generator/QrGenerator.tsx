@@ -14,7 +14,7 @@ function downloadDataUrl(url: string, filename: string) {
 }
 
 export default function QrGenerator() {
-  const [text, setText] = useState("https://obsidiankit.app");
+  const [text, setText] = useState("https://obsidiankit.me");
   const [size, setSize] = useState(320);
   const [errorCorrection, setErrorCorrection] = useState<ErrorCorrection>("M");
   const [dataUrl, setDataUrl] = useState("");

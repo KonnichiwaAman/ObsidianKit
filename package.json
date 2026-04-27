@@ -5,12 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "generate:seo": "node scripts/generate-seo-assets.mjs",
-    "generate:prerender-routes": "node scripts/generate-prerender-routes.mjs",
-    "build": "npm run generate:prerender-routes && npm run generate:seo && tsc -b && vite build",
+    "generate:seo": "tsx scripts/generate-seo-assets.ts",
+    "generate:prerender-routes": "tsx scripts/generate-prerender-routes.ts",
+    "build": "npm run generate:prerender-routes && npm run generate:seo && tsc -b && vite build && tsx scripts/generate-static-seo-pages.ts && npm run check:bundle",
     "build:analyze": "cross-env ANALYZE=true npm run build",
+    "check:bundle": "node scripts/check-bundle-budgets.mjs",
     "lint": "eslint .",
+    "test": "tsx scripts/test-integrity.ts",
     "preview": "vite preview"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "^0.8.13"
   },
   "dependencies": {
     "@ffmpeg/ffmpeg": "^0.12.15",
@@ -50,6 +55,7 @@
     "tailwindcss": "^4.2.2",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.0",
+    "tsx": "^4.20.6",
     "vite": "^8.0.4"
   }
 }

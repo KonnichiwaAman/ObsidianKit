@@ -48,7 +48,7 @@ export function BlogPage() {
                       <CalendarDays className="h-3.5 w-3.5" />
                       {post.publishedAt}
                     </span>
-                    <span>•</span>
+                    <span>/</span>
                     <span>{post.readingMinutes} min read</span>
                   </div>
 

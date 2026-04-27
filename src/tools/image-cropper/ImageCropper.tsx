@@ -19,6 +19,41 @@ interface CropResult {
   outputType: ExportImageType;
 }
 
+interface CropBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+type CropGestureMode = "draw" | "move" | "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
+
+interface CropGesture {
+  mode: CropGestureMode;
+  pointerId: number;
+  startClientX: number;
+  startClientY: number;
+  startPointerX: number;
+  startPointerY: number;
+  startCrop: CropBox;
+}
+
+const MIN_CROP_SIZE = 5;
+
+const CROP_HANDLES: Array<{
+  id: Exclude<CropGestureMode, "draw" | "move">;
+  className: string;
+}> = [
+  { id: "nw", className: "left-0 top-0 -translate-x-1/2 -translate-y-1/2 cursor-nwse-resize" },
+  { id: "n", className: "left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 cursor-ns-resize" },
+  { id: "ne", className: "right-0 top-0 translate-x-1/2 -translate-y-1/2 cursor-nesw-resize" },
+  { id: "e", className: "right-0 top-1/2 translate-x-1/2 -translate-y-1/2 cursor-ew-resize" },
+  { id: "se", className: "bottom-0 right-0 translate-x-1/2 translate-y-1/2 cursor-nwse-resize" },
+  { id: "s", className: "bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 cursor-ns-resize" },
+  { id: "sw", className: "bottom-0 left-0 -translate-x-1/2 translate-y-1/2 cursor-nesw-resize" },
+  { id: "w", className: "left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize" },
+];
+
 function resolveExportType(file: File, selectedFormat: OutputFormat): ExportImageType {
   if (selectedFormat !== "original") return selectedFormat;
   if (file.type === "image/png") return "image/png";
@@ -46,10 +81,9 @@ export default function ImageCropper() {
   const sourceRef = useRef<DecodedImage | null>(null);
 
   // Crop box state
-  const [crop, setCrop] = useState({ x: 10, y: 10, width: 80, height: 80 }); // percentages
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [cropStart, setCropStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [crop, setCrop] = useState<CropBox>({ x: 10, y: 10, width: 80, height: 80 });
+  const [activeGesture, setActiveGesture] = useState<CropGestureMode | null>(null);
+  const gestureRef = useRef<CropGesture | null>(null);
 
   useEffect(() => {
     if (!file) {
@@ -100,40 +134,127 @@ export default function ImageCropper() {
     };
   }, []);
 
-  function setCropWithinBounds(nextCrop: { x: number; y: number; width: number; height: number }) {
-    const width = clamp(nextCrop.width, 5, 100);
-    const height = clamp(nextCrop.height, 5, 100);
+  function setCropWithinBounds(nextCrop: CropBox) {
+    const width = clamp(nextCrop.width, MIN_CROP_SIZE, 100);
+    const height = clamp(nextCrop.height, MIN_CROP_SIZE, 100);
     const x = clamp(nextCrop.x, 0, 100 - width);
     const y = clamp(nextCrop.y, 0, 100 - height);
     setCrop({ x, y, width, height });
   }
 
-  function handlePointerDown(e: React.PointerEvent) {
-    if (!containerRef.current) return;
-    setIsDragging(true);
-    setDragStart({ x: e.clientX, y: e.clientY });
-    setCropStart({ ...crop });
-    e.currentTarget.setPointerCapture(e.pointerId);
-  }
-
-  function handlePointerMove(e: React.PointerEvent) {
-    if (!isDragging || !containerRef.current) return;
+  function getPointerPercent(event: React.PointerEvent): { x: number; y: number } | null {
+    if (!containerRef.current) return null;
 
     const rect = containerRef.current.getBoundingClientRect();
-    const dx = ((e.clientX - dragStart.x) / rect.width) * 100;
-    const dy = ((e.clientY - dragStart.y) / rect.height) * 100;
+    if (rect.width <= 0 || rect.height <= 0) return null;
 
-    setCropWithinBounds({
-      x: cropStart.x + dx,
-      y: cropStart.y + dy,
-      width: cropStart.width,
-      height: cropStart.height,
-    });
+    return {
+      x: clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100),
+      y: clamp(((event.clientY - rect.top) / rect.height) * 100, 0, 100),
+    };
   }
 
-  function handlePointerUp(e: React.PointerEvent) {
-    setIsDragging(false);
-    e.currentTarget.releasePointerCapture(e.pointerId);
+  function beginCropGesture(event: React.PointerEvent<HTMLElement>, mode: CropGestureMode) {
+    const pointer = getPointerPercent(event);
+    if (!pointer) return;
+
+    gestureRef.current = {
+      mode,
+      pointerId: event.pointerId,
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+      startPointerX: pointer.x,
+      startPointerY: pointer.y,
+      startCrop: { ...crop },
+    };
+
+    setActiveGesture(mode);
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function cropFromResizeGesture(gesture: CropGesture, dx: number, dy: number): CropBox {
+    const start = gesture.startCrop;
+    let left = start.x;
+    let top = start.y;
+    let right = start.x + start.width;
+    let bottom = start.y + start.height;
+
+    if (gesture.mode.includes("w")) left = start.x + dx;
+    if (gesture.mode.includes("e")) right = start.x + start.width + dx;
+    if (gesture.mode.includes("n")) top = start.y + dy;
+    if (gesture.mode.includes("s")) bottom = start.y + start.height + dy;
+
+    left = clamp(left, 0, right - MIN_CROP_SIZE);
+    right = clamp(right, left + MIN_CROP_SIZE, 100);
+    top = clamp(top, 0, bottom - MIN_CROP_SIZE);
+    bottom = clamp(bottom, top + MIN_CROP_SIZE, 100);
+
+    return {
+      x: left,
+      y: top,
+      width: right - left,
+      height: bottom - top,
+    };
+  }
+
+  function handleGestureMove(event: React.PointerEvent<HTMLElement>) {
+    const gesture = gestureRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId || !containerRef.current) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+
+    const dx = ((event.clientX - gesture.startClientX) / rect.width) * 100;
+    const dy = ((event.clientY - gesture.startClientY) / rect.height) * 100;
+
+    if (gesture.mode === "draw") {
+      const pointer = getPointerPercent(event);
+      if (!pointer) return;
+
+      setCropWithinBounds({
+        x: Math.min(gesture.startPointerX, pointer.x),
+        y: Math.min(gesture.startPointerY, pointer.y),
+        width: Math.abs(pointer.x - gesture.startPointerX),
+        height: Math.abs(pointer.y - gesture.startPointerY),
+      });
+      return;
+    }
+
+    if (gesture.mode === "move") {
+      setCropWithinBounds({
+        ...gesture.startCrop,
+        x: gesture.startCrop.x + dx,
+        y: gesture.startCrop.y + dy,
+      });
+      return;
+    }
+
+    setCrop(cropFromResizeGesture(gesture, dx, dy));
+  }
+
+  function endCropGesture(event: React.PointerEvent<HTMLElement>) {
+    const gesture = gestureRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+
+    gestureRef.current = null;
+    setActiveGesture(null);
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  function handleCanvasPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    beginCropGesture(event, "draw");
+  }
+
+  function handleCropBoxPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    const target = event.target as HTMLElement;
+    const handle = target.closest<HTMLElement>("[data-crop-handle]");
+    const mode = (handle?.dataset.cropHandle as CropGestureMode | undefined) ?? "move";
+    beginCropGesture(event, mode);
   }
 
   async function handleDownload() {
@@ -226,7 +347,7 @@ export default function ImageCropper() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="text-center mb-8">
-        <p className="text-sm text-[var(--color-text-muted)]">Crop images visually. Drag the box to select the area you want to keep.</p>
+        <p className="text-sm text-[var(--color-text-muted)]">Crop images visually with a draggable, resizable selection.</p>
       </div>
 
       {!file ? (
@@ -243,29 +364,38 @@ export default function ImageCropper() {
           
           {/* Work Area */}
           <div className="relative flex w-full flex-col items-center justify-center rounded-2xl border border-[var(--color-border-primary)] bg-[var(--color-bg-input)] p-6">
-             <div ref={containerRef} className="relative inline-block overflow-hidden rounded shadow-xl" style={{ maxHeight: '60vh' }}>
+             <div
+               ref={containerRef}
+               className="relative inline-block touch-none select-none overflow-hidden rounded shadow-xl cursor-crosshair"
+               style={{ maxHeight: "60vh" }}
+               onPointerDown={handleCanvasPointerDown}
+               onPointerMove={handleGestureMove}
+               onPointerUp={endCropGesture}
+               onPointerCancel={endCropGesture}
+             >
                 <img 
                    src={imgSrc} 
                    alt="To crop" 
-                   className="block max-w-full max-h-[60vh] object-contain pointer-events-none" 
+                   className="pointer-events-none block max-h-[60vh] max-w-full select-none object-contain" 
                 />
-                
-                {/* Crop Overlay */}
-                <div className="absolute inset-0 bg-black/50 pointer-events-none" />
                 
                 {/* Crop Box */}
                 <div 
-                   onPointerDown={handlePointerDown}
-                   onPointerMove={handlePointerMove}
-                   onPointerUp={handlePointerUp}
-                   onPointerCancel={handlePointerUp}
+                   onPointerDown={handleCropBoxPointerDown}
+                   onPointerMove={handleGestureMove}
+                   onPointerUp={endCropGesture}
+                   onPointerCancel={endCropGesture}
                    style={{
                       left: `${crop.x}%`,
                       top: `${crop.y}%`,
                       width: `${crop.width}%`,
                       height: `${crop.height}%`,
                    }}
-                   className="absolute border-2 border-white bg-transparent pointer-events-auto cursor-move shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] outline outline-1 outline-white/50 z-10"
+                   role="group"
+                   aria-label="Crop selection"
+                   className={`absolute z-10 touch-none border-2 border-white bg-transparent shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] outline outline-1 outline-white/50 ${
+                     activeGesture ? "cursor-grabbing" : "cursor-move"
+                   }`}
                 >
                    {/* Grid lines */}
                    <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 opacity-30 pointer-events-none">
@@ -279,6 +409,17 @@ export default function ImageCropper() {
                       <div className="border-r border-white" />
                       <div className="" />
                    </div>
+
+                   {CROP_HANDLES.map((handle) => (
+                     <span
+                       key={handle.id}
+                       aria-hidden="true"
+                       data-crop-handle={handle.id}
+                       className={`absolute z-20 h-8 w-8 sm:h-6 sm:w-6 ${handle.className}`}
+                     >
+                       <span className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/40 bg-white shadow" />
+                     </span>
+                   ))}
                 </div>
              </div>
           </div>

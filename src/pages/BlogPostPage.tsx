@@ -47,7 +47,7 @@ export function BlogPostPage() {
 
         <header className="mt-5 rounded-3xl border border-[var(--color-border-primary)] bg-[var(--color-bg-card)] p-6 sm:p-8">
           <p className="text-[11px] uppercase tracking-[0.14em] text-[var(--color-text-muted)]">
-            {post.publishedAt} • {post.readingMinutes} min read
+            {post.publishedAt} / {post.readingMinutes} min read
           </p>
           <h1 className="mt-3 text-2xl font-black tracking-tight text-[var(--color-text-primary)] sm:text-4xl">
             {post.title}

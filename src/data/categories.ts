@@ -6,8 +6,8 @@ import {
   Calculator,
   Code,
 } from "lucide-react";
-import type { Category } from "@/types";
-import { tools } from "@/data/tools";
+import type { Category } from "../types";
+import { tools } from "./tools";
 
 const toolCountByCategory = tools.reduce<Record<string, number>>((accumulator, tool) => {
   const current = accumulator[tool.categoryId] ?? 0;

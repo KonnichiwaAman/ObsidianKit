@@ -13,6 +13,12 @@ export function Footer() {
 
           <nav className="flex items-center gap-4" aria-label="Footer links">
             <Link
+              to="/tools"
+              className="text-xs text-[var(--color-text-muted)] transition-colors md:hover:text-[var(--color-text-primary)]"
+            >
+              Tools
+            </Link>
+            <Link
               to="/blog"
               className="text-xs text-[var(--color-text-muted)] transition-colors md:hover:text-[var(--color-text-primary)]"
             >

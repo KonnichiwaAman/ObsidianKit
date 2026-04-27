@@ -30,7 +30,7 @@ export function Navbar() {
 
         <div className="hidden items-center gap-2 md:flex">
           <Link
-            to="/"
+            to="/tools"
             className="mobile-tap-feedback inline-flex h-9 items-center gap-2 rounded-lg border border-[var(--color-border-primary)]
                        bg-[var(--color-bg-card)] px-3.5 text-xs font-medium text-[var(--color-text-secondary)]
                        transition-all duration-200 active:scale-[0.985] md:hover:border-[var(--color-border-hover)] md:hover:text-[var(--color-text-primary)]"
@@ -64,6 +64,22 @@ export function Navbar() {
       {/* Mobile search */}
       <div className="border-t border-[var(--color-border-primary)] px-4 py-2.5 pl-[max(1rem,var(--safe-area-left))] pr-[max(1rem,var(--safe-area-right))] sm:hidden">
         <SearchBar variant="navbar" />
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <Link
+            to="/tools"
+            className="mobile-tap-feedback inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-card)] text-xs font-medium text-[var(--color-text-secondary)] active:scale-[0.985]"
+          >
+            <Grid2x2 className="h-3.5 w-3.5" />
+            All Tools
+          </Link>
+          <Link
+            to="/blog"
+            className="mobile-tap-feedback inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-card)] text-xs font-medium text-[var(--color-text-secondary)] active:scale-[0.985]"
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            Blog
+          </Link>
+        </div>
       </div>
     </header>
   );

@@ -1,12 +1,12 @@
-import type { Category, Tool } from "@/types";
+import type { Category, Tool } from "../types";
 import {
   DEFAULT_OG_IMAGE_URL,
   SITE_LOCALE,
   SITE_NAME,
   SITE_TAGLINE,
   SITE_URL,
-} from "@/lib/siteConfig";
-import { getToolKeywordCluster } from "@/data/toolKeywordMap";
+} from "./siteConfig";
+import { getToolKeywordCluster } from "../data/toolKeywordMap";
 
 export type JsonLdObject = Record<string, unknown>;
 
@@ -112,6 +112,11 @@ export function buildHomeSeo(totalTools: number, totalCategories: number): SeoMe
         url: SITE_URL,
         inLanguage: SITE_LOCALE,
         description,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${SITE_URL}/tools?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
       },
       {
         "@context": "https://schema.org",
@@ -135,6 +140,60 @@ export function buildHomeSeo(totalTools: number, totalCategories: number): SeoMe
           "Works on desktop and mobile",
         ],
       },
+    ],
+  };
+}
+
+export function buildToolsIndexSeo(allTools: Tool[], allCategories: Category[]): SeoMetadata {
+  const description = trimMetaDescription(
+    `Browse all ${allTools.length}+ free ${SITE_NAME} tools in one searchable directory. ` +
+      "Find PDF compressors, image converters, calculators, text utilities, and private browser-based workflows.",
+  );
+
+  return {
+    title: `All Tools - ${allTools.length}+ Free Online Utilities | ${SITE_NAME}`,
+    description,
+    keywords: dedupeKeywords([
+      ...BASE_KEYWORDS,
+      "all online tools",
+      "free web utilities",
+      "PDF compressor online",
+      "image tools online",
+      "calculator tools",
+      ...allCategories.map((category) => category.name),
+      ...allTools.slice(0, 20).map((tool) => `${tool.name} online`),
+    ]),
+    path: "/tools",
+    imageUrl: DEFAULT_OG_IMAGE_URL,
+    ogType: "website",
+    structuredData: [
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: `All ${SITE_NAME} Tools`,
+        url: toAbsoluteUrl("/tools"),
+        inLanguage: SITE_LOCALE,
+        description,
+        isPartOf: {
+          "@type": "WebSite",
+          name: SITE_NAME,
+          url: SITE_URL,
+        },
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: allTools.length,
+          itemListElement: allTools.map((tool, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: tool.name,
+            url: toAbsoluteUrl(tool.path),
+          })),
+        },
+      },
+      buildBreadcrumbSchema([
+        { name: SITE_NAME, path: "/" },
+        { name: "All Tools", path: "/tools" },
+      ]),
     ],
   };
 }
@@ -256,6 +315,36 @@ export function buildToolSeo(tool: Tool, category?: Category): SeoMetadata {
         ...(category ? [{ name: category.name, path: category.path }] : []),
         { name: tool.name, path: tool.path },
       ]),
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: `Does ${tool.name} upload my file?`,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "No. File processing runs locally in your browser tab, and outputs are generated on your device.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: `Is ${tool.name} free to use?`,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: `${SITE_NAME} tools are free and optimized for private, browser-based workflows.`,
+            },
+          },
+          {
+            "@type": "Question",
+            name: `Can I use ${tool.name} on mobile?`,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes. Most workflows work on mobile browsers, though large files process faster on desktop hardware.",
+            },
+          },
+        ],
+      },
     ],
   };
 }

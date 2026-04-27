@@ -13,6 +13,11 @@ const CategoryPage = lazy(async () => {
   return { default: module.CategoryPage };
 });
 
+const ToolsPage = lazy(async () => {
+  const module = await import("@/pages/ToolsPage");
+  return { default: module.ToolsPage };
+});
+
 const ToolPage = lazy(async () => {
   const module = await import("@/pages/ToolPage");
   return { default: module.ToolPage };
@@ -52,6 +57,7 @@ function AppRoutes() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/tools" element={<ToolsPage />} />
           <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="/tool/:toolId" element={<ToolPage />} />
           <Route path="/blog" element={<BlogPage />} />

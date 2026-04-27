@@ -13,8 +13,16 @@ function resolveManualChunk(id: string): string | undefined {
     return "vendor-core";
   }
 
-  if (id.includes("pdf-lib") || id.includes("pdfjs-dist") || id.includes("@pdfsmaller/pdf-encrypt-lite")) {
-    return "vendor-pdf";
+  if (id.includes("pdf-lib")) {
+    return "vendor-pdf-lib";
+  }
+
+  if (id.includes("pdfjs-dist")) {
+    return "vendor-pdfjs";
+  }
+
+  if (id.includes("@pdfsmaller/pdf-encrypt-lite")) {
+    return "vendor-pdf-encrypt";
   }
 
   if (id.includes("@ffmpeg/ffmpeg") || id.includes("@ffmpeg/util")) {
@@ -29,8 +37,12 @@ function resolveManualChunk(id: string): string | undefined {
     return "vendor-bgremoval";
   }
 
-  if (id.includes("docx") || id.includes("mammoth")) {
-    return "vendor-doc";
+  if (id.includes("docx")) {
+    return "vendor-docx";
+  }
+
+  if (id.includes("mammoth")) {
+    return "vendor-mammoth";
   }
 
   if (id.includes("heic2any")) {
@@ -45,12 +57,13 @@ function resolveManualChunk(id: string): string | undefined {
     return "vendor-qrcode";
   }
 
-  return "vendor-misc";
+  return undefined;
 }
 
 // https://vite.dev/config/
 export default defineConfig(() => {
   const shouldAnalyze = process.env.ANALYZE === "true";
+  const shouldGenerateSourceMap = shouldAnalyze || process.env.SOURCE_MAP === "true";
 
   const plugins: PluginOption[] = [
     react(),
@@ -76,6 +89,9 @@ export default defineConfig(() => {
       },
     },
     build: {
+      target: "es2020",
+      sourcemap: shouldGenerateSourceMap,
+      chunkSizeWarningLimit: 1500,
       rollupOptions: {
         output: {
           manualChunks: resolveManualChunk,

@@ -1,4 +1,18 @@
-const FALLBACK_SITE_URL = "https://obsidiankit.com";
+const FALLBACK_SITE_URL = "https://obsidiankit.me";
+
+type RuntimeEnv = Record<string, string | undefined>;
+
+function readRuntimeEnv(): RuntimeEnv {
+  const importMetaEnv = (import.meta as ImportMeta & { env?: RuntimeEnv }).env;
+  if (importMetaEnv) {
+    return importMetaEnv;
+  }
+
+  const processRef = (globalThis as { process?: { env?: RuntimeEnv } }).process;
+  return processRef?.env ?? {};
+}
+
+const runtimeEnv = readRuntimeEnv();
 
 function normalizeSiteUrl(value: string | undefined): string {
   if (!value) return FALLBACK_SITE_URL;
@@ -19,21 +33,21 @@ function normalizeSiteUrl(value: string | undefined): string {
 export const SITE_NAME = "ObsidianKit";
 export const SITE_TAGLINE = "Fast, private, browser-based tools that run entirely on your device.";
 export const SITE_LOCALE = "en";
-export const SITE_URL = normalizeSiteUrl(import.meta.env.VITE_SITE_URL);
+export const SITE_URL = normalizeSiteUrl(runtimeEnv.VITE_SITE_URL ?? runtimeEnv.SITE_URL);
 
 export const DEFAULT_OG_IMAGE_PATH = "/web-app-manifest-512x512.png";
 export const DEFAULT_OG_IMAGE_URL = `${SITE_URL}${DEFAULT_OG_IMAGE_PATH}`;
 
-export const TWITTER_HANDLE = import.meta.env.VITE_TWITTER_HANDLE?.trim() ?? "";
+export const TWITTER_HANDLE = runtimeEnv.VITE_TWITTER_HANDLE?.trim() ?? "";
 
-export const ADSENSE_CLIENT = import.meta.env.VITE_ADSENSE_CLIENT?.trim() ?? "";
+export const ADSENSE_CLIENT = runtimeEnv.VITE_ADSENSE_CLIENT?.trim() ?? "";
 export const ADSENSE_ENABLED = ADSENSE_CLIENT.startsWith("ca-pub-");
-export const ADSENSE_SLOT_INLINE = import.meta.env.VITE_ADSENSE_SLOT_INLINE?.trim() ?? "";
+export const ADSENSE_SLOT_INLINE = runtimeEnv.VITE_ADSENSE_SLOT_INLINE?.trim() ?? "";
 
-export const GA4_MEASUREMENT_ID = import.meta.env.VITE_GA4_MEASUREMENT_ID?.trim() ?? "";
+export const GA4_MEASUREMENT_ID = runtimeEnv.VITE_GA4_MEASUREMENT_ID?.trim() ?? "";
 
 export const SUPPORT_LINKS = {
-  kofi: import.meta.env.VITE_KOFI_URL?.trim() || "https://ko-fi.com/obsidiankit",
+  kofi: runtimeEnv.VITE_KOFI_URL?.trim() || "https://ko-fi.com/obsidiankit",
   githubSponsors:
-    import.meta.env.VITE_GITHUB_SPONSORS_URL?.trim() || "https://github.com/sponsors",
+    runtimeEnv.VITE_GITHUB_SPONSORS_URL?.trim() || "https://github.com/sponsors",
 };

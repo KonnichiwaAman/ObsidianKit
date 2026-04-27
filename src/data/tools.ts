@@ -60,7 +60,7 @@ import {
   FileSearch,
   Type,
 } from "lucide-react";
-import type { Tool } from "@/types";
+import type { Tool } from "../types";
 
 export const tools: Tool[] = [
   // ─── Image Tools ──────────────────────────────────────

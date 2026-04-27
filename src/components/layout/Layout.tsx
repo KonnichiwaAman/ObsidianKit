@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { ConsentBanner } from "@/components/monetization/ConsentBanner";
 
 export function Layout() {
   return (
@@ -19,6 +20,7 @@ export function Layout() {
       </main>
 
       <Footer />
+      <ConsentBanner />
     </div>
   );
 }

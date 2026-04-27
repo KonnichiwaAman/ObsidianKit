@@ -3,6 +3,7 @@ interface SupportBannerProps {
   compact?: boolean;
 }
 
-export function SupportBanner(_props: SupportBannerProps) {
+export function SupportBanner(props: SupportBannerProps) {
+  void props;
   return null;
 }

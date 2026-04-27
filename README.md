@@ -1,73 +1,89 @@
-# React + TypeScript + Vite
+# ObsidianKit
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ObsidianKit is a privacy-first, browser-native toolbox for PDF, image, media, calculator, and utility workflows.
 
-Currently, two official plugins are available:
+Core principles:
+- Local-first file processing where possible.
+- Fast route-level loading with lazy tool modules.
+- SEO-ready static route generation for categories, tools, and blog content.
+- Explicit user consent gating for analytics and ads.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+- React 19 + TypeScript 6
+- Vite 8 + Tailwind CSS 4
+- React Router 7
+- Zustand
+- Tooling libraries: pdf-lib, pdfjs-dist, ffmpeg.wasm, tesseract.js, heic2any, mammoth, docx
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Development
 
-## Expanding the ESLint configuration
+Install dependencies:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Run local dev server:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm run dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Quality Gates
+
+Lint:
+
+```bash
+npm run lint
+```
+
+Integrity tests:
+
+```bash
+npm run test
+```
+
+Production build (includes SEO/static generation and bundle budget checks):
+
+```bash
+npm run build
+```
+
+Bundle analysis:
+
+```bash
+npm run build:analyze
+```
+
+## Build Pipeline
+
+`npm run build` runs these stages:
+1. Generate route manifest: `public/prerender-routes.json`
+2. Generate SEO assets: `public/robots.txt`, `public/sitemap.xml`
+3. Type check and build with Vite
+4. Inject route-aware static SEO head tags into built HTML pages
+5. Enforce bundle budgets
+
+## Privacy and Consent
+
+- File content processing is local-first and runs in the browser for supported tools.
+- Optional analytics and ads are disabled until the user makes a consent choice.
+- Currency conversion and select integrations may make explicit external network requests.
+
+## Repository Notes
+
+- Tool metadata lives in `src/data/tools.ts`.
+- Tool component lazy registry lives in `src/tools/index.ts`.
+- Route/SEO script source of truth is in `scripts/route-manifest.ts`.
+
+When adding a new tool, always update:
+1. `src/data/tools.ts`
+2. `src/tools/index.ts`
+3. Tool implementation folder under `src/tools/`
+
+Then run:
+
+```bash
+npm run test && npm run build
 ```

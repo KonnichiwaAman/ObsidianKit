@@ -1,7 +1,13 @@
 [
   "/",
+  "/404",
   "/blog",
   "/blog/client-side-tools-seo-playbook-2026",
+  "/blog/compress-pdf-online-without-uploading",
+  "/blog/mobile-friendly-online-tools-gesture-checklist",
+  "/blog/pdf-workflow-merge-split-compress-protect",
+  "/blog/png-jpg-webp-heic-image-format-guide",
+  "/blog/private-browser-tools-vs-cloud-upload-tools",
   "/category/calculators",
   "/category/developer-text-tools",
   "/category/image-tools",
@@ -79,5 +85,6 @@
   "/tool/webp-converter",
   "/tool/weight-converter",
   "/tool/word-counter",
-  "/tool/word-to-pdf"
+  "/tool/word-to-pdf",
+  "/tools"
 ]

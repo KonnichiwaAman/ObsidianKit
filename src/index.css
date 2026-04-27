@@ -156,12 +156,52 @@ input[type="file"] {
   cursor: pointer;
 }
 
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 button:disabled,
 input:disabled,
 textarea:disabled,
 select:disabled,
 [aria-disabled="true"] {
   cursor: not-allowed;
+}
+
+.cursor-crosshair {
+  cursor: crosshair;
+}
+
+.cursor-grab {
+  cursor: grab;
+}
+
+.cursor-grabbing {
+  cursor: grabbing;
+}
+
+.cursor-move {
+  cursor: move;
+}
+
+.cursor-ew-resize {
+  cursor: ew-resize;
+}
+
+.cursor-ns-resize {
+  cursor: ns-resize;
+}
+
+.cursor-nesw-resize {
+  cursor: nesw-resize;
+}
+
+.cursor-nwse-resize {
+  cursor: nwse-resize;
 }
 
 /* ── Light Mode Overrides ── */
@@ -188,6 +228,80 @@ html.light {
   --glass-bg-elevated: var(--glass-light-bg-elevated);
   --glass-border: var(--glass-light-border);
   --glass-nav: var(--glass-light-nav);
+}
+
+/* ── Light Mode – Amber / Warning ── */
+html.light [class~="text-amber-100/80"],
+html.light [class~="text-amber-200"],
+html.light [class~="text-amber-200/90"],
+html.light [class~="text-amber-300"],
+html.light [class~="text-amber-400"],
+html.light [class~="text-amber-500"] {
+  color: #92400e !important;
+}
+
+/* ── Light Mode – Green / Emerald / Success ── */
+html.light [class~="text-green-300"],
+html.light [class~="text-green-400"],
+html.light [class~="text-green-500"],
+html.light [class~="text-emerald-200"],
+html.light [class~="text-emerald-200/90"],
+html.light [class~="text-emerald-300"],
+html.light [class~="text-emerald-400"],
+html.light [class~="text-emerald-500"] {
+  color: #047857 !important;
+}
+
+/* ── Light Mode – Blue / Info ── */
+html.light [class~="text-blue-100/90"],
+html.light [class~="text-blue-300"],
+html.light [class~="text-blue-400"],
+html.light [class~="text-blue-500"],
+html.light [class~="text-blue-600"] {
+  color: #1d4ed8 !important;
+}
+
+/* ── Light Mode – Red / Error ── */
+html.light [class~="text-red-300"],
+html.light [class~="text-red-400"],
+html.light [class~="text-red-500"],
+html.light [class~="text-red-600"] {
+  color: #b91c1c !important;
+}
+
+/* ── Light Mode – Alert / Status backgrounds ── */
+html.light [class*="bg-red-500/"] {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+}
+
+html.light [class*="border-red-500/"] {
+  border-color: rgba(185, 28, 28, 0.25) !important;
+}
+
+html.light [class*="bg-emerald-500/"],
+html.light [class*="bg-green-500/"] {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+}
+
+html.light [class*="border-emerald-500/"],
+html.light [class*="border-green-500/"] {
+  border-color: rgba(4, 120, 87, 0.25) !important;
+}
+
+html.light [class*="bg-amber-500/"] {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+}
+
+html.light [class*="border-amber-500/"] {
+  border-color: rgba(146, 64, 14, 0.25) !important;
+}
+
+html.light [class*="bg-blue-500/"] {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+}
+
+html.light [class*="border-blue-500/"] {
+  border-color: rgba(29, 78, 216, 0.25) !important;
 }
 
 @keyframes tool-ripple {
@@ -333,6 +447,6 @@ select:focus-visible {
   input,
   textarea,
   select {
-    font-size: 16px;
+    font-size: 16px !important;
   }
 }

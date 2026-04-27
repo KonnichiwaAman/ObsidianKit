@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { initAnalytics, trackPageView } from "@/lib/analytics";
+import { CONSENT_EVENT, isAnalyticsConsentGranted } from "@/lib/consent";
 
 function defer(callback: () => void) {
   if (typeof queueMicrotask === "function") {
@@ -13,6 +14,7 @@ function defer(callback: () => void) {
 
 export function useRouteTracking() {
   const location = useLocation();
+  const currentPath = `${location.pathname}${location.search}${location.hash}`;
 
   useEffect(() => {
     initAnalytics();
@@ -27,9 +29,24 @@ export function useRouteTracking() {
   }, [location.pathname, location.search, location.hash]);
 
   useEffect(() => {
-    const path = `${location.pathname}${location.search}${location.hash}`;
     defer(() => {
-      trackPageView(path, document.title);
+      trackPageView(currentPath, document.title);
     });
-  }, [location.pathname, location.search, location.hash]);
+  }, [currentPath]);
+
+  useEffect(() => {
+    const handleConsentUpdate = () => {
+      if (!isAnalyticsConsentGranted()) return;
+
+      defer(() => {
+        initAnalytics();
+        trackPageView(currentPath, document.title);
+      });
+    };
+
+    window.addEventListener(CONSENT_EVENT, handleConsentUpdate as EventListener);
+    return () => {
+      window.removeEventListener(CONSENT_EVENT, handleConsentUpdate as EventListener);
+    };
+  }, [currentPath]);
 }
