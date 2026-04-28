@@ -1,0 +1,38 @@
+---
+description: Performance, SEO, and security guardrails for all website changes
+alwaysApply: true
+---
+
+# ObsidianKit Quality Guardrails
+
+Apply these for every change unless the user explicitly asks otherwise.
+
+## Delivery Workflow
+- Keep changes small and production-ready: implement, run `npm run build`, and fix breakages before finishing.
+- Prefer existing patterns and utilities over new dependencies.
+- Preserve current UX and avoid regressions in routing, rendering, and tool behavior.
+
+## Performance
+- Protect initial load: lazy-load route/tool-heavy code and avoid inflating main bundles.
+- Minimize runtime overhead (avoid unnecessary effects, large synchronous work, and repeated parsing).
+- For media/file features, prefer browser-native APIs and stream/chunk where possible.
+- Keep assets compressed and avoid shipping debug-only code to production.
+
+## SEO
+- Ensure each indexable page has accurate title, description, canonical URL, and robots policy.
+- Keep structured data valid (JSON-LD) and aligned with visible page content.
+- Maintain SEO artifacts in build outputs (`robots.txt`, `sitemap.xml`, prerender/static SEO pages, `llms.txt`).
+- Use descriptive internal links between related tools/categories/blog pages.
+
+## Security & Privacy
+- Never add secrets, keys, or credentials to tracked files.
+- Keep file processing client-side by default; do not introduce silent server uploads.
+- Validate and sanitize user-provided content and file metadata before rendering.
+- Avoid risky HTML injection; if unavoidable, sanitize strictly.
+- Keep third-party scripts minimal, consent-gated, and clearly necessary.
+
+## Pre-Ship Checklist
+- Build passes: `npm run build`
+- No new lints in touched files
+- No secret-bearing files staged
+- SEO/static artifacts regenerated if routes/meta changed
