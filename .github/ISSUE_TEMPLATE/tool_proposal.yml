@@ -1,0 +1,55 @@
+name: New tool proposal
+description: Propose a new local-first utility for ObsidianKit.
+title: "[Tool]: "
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Proposed tool name
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: User workflow
+      description: What input does the user provide and what output should the tool produce?
+    validations:
+      required: true
+  - type: textarea
+    id: audience
+    attributes:
+      label: Intended users and use cases
+    validations:
+      required: true
+  - type: dropdown
+    id: local
+    attributes:
+      label: Can processing remain entirely in the browser?
+      options:
+        - Yes
+        - Mostly, with an optional external request
+        - No
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Likely libraries or browser APIs
+      description: Include approximate bundle-size or worker requirements when known.
+  - type: textarea
+    id: validation
+    attributes:
+      label: Acceptance criteria
+      description: List the observable behaviors that would make the tool complete.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched the existing tool catalog and issue tracker.
+          required: true
+        - label: I described privacy and network implications.
+          required: true
