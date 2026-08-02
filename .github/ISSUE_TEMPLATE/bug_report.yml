@@ -1,0 +1,72 @@
+name: Bug report
+description: Report reproducible incorrect behavior in an ObsidianKit tool or page.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for helping improve ObsidianKit. Do not attach sensitive personal files; use synthetic examples.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - PDF tool
+        - Image tool
+        - Audio or video tool
+        - Calculator or converter
+        - Text or developer tool
+        - Navigation, search, or accessibility
+        - Build, deployment, or documentation
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: tool-url
+    attributes:
+      label: Tool or page URL
+      placeholder: https://obsidiankit.me/...
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the observed behavior and why it is incorrect.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Open ...
+        2. Select a synthetic file ...
+        3. Choose ...
+        4. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and operating system
+      placeholder: Chrome 131 on Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add screenshots, console output, or a synthetic test file when safe.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and pull requests.
+          required: true
+        - label: I did not include credentials, personal documents, or private data.
+          required: true
