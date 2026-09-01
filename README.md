@@ -111,6 +111,8 @@ npm run test && npm run build
 
 - [Contributing guide](CONTRIBUTING.md)
 - [Governance and maintainer responsibilities](GOVERNANCE.md)
+- [Roadmap and planned tools](ROADMAP.md)
+- [Support and troubleshooting](SUPPORT.md)
 - [Security policy](SECURITY.md)
 - [Code of conduct](CODE_OF_CONDUCT.md)
 - [Release history](CHANGELOG.md)
