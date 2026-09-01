@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/assets/social-preview.png" alt="ObsidianKit: private browser-native tools" width="100%">
+
 # ObsidianKit
 
 **Privacy-first, browser-native toolbox for document, image, media, and calculation workflows.**
