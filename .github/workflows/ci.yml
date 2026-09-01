@@ -39,8 +39,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Run integrity tests
-        run: npm run test
+      - name: Run unit tests
+        run: npm test
+
+      - name: Validate routes and metadata
+        run: npm run test:integrity
 
       - name: Build production assets
         run: npm run build

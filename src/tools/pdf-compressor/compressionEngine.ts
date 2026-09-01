@@ -841,7 +841,7 @@ export async function renderPdfFirstPagePreview(pdfBlob: Blob): Promise<Blob> {
 
     return previewBlob;
   } finally {
-    await sourceDocument.destroy();
+    await sourceDocument.loadingTask.destroy();
   }
 }
 
@@ -996,7 +996,7 @@ export async function compressWithRasterStrategy(
     const outputBytes = await outputDoc.save({ useObjectStreams: true, addDefaultPage: false });
     return new Blob([toArrayBuffer(outputBytes)], { type: "application/pdf" });
   } finally {
-    await sourceDocument.destroy();
+    await sourceDocument.loadingTask.destroy();
   }
 }
 

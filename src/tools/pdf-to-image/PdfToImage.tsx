@@ -123,7 +123,7 @@ export default function PdfToImage() {
           setResultMessage(`${converted.length} pages exported and packaged as ZIP.`);
         }
       } finally {
-        await pdfDocument.destroy();
+        await pdfDocument.loadingTask.destroy();
       }
 
       setProgressLabel("");

@@ -127,6 +127,6 @@ export async function extractPdfText(
 
     return pagesText;
   } finally {
-    await pdfDocument.destroy();
+    await pdfDocument.loadingTask.destroy();
   }
 }

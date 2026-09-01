@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
+import { toAlternatingCase, toInverseCase, toSentenceCase, toTitleCase } from "./logic";
 
 export default function CaseConverter() {
   const [text, setText] = useState("");
@@ -10,22 +11,6 @@ export default function CaseConverter() {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }
-
-  function toSentenceCase(str: string) {
-    return str.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
-  }
-
-  function toTitleCase(str: string) {
-    return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-  }
-
-  function toAlternatingCase(str: string) {
-    return str.split("").map((c, i) => (i % 2 === 0 ? c.toLowerCase() : c.toUpperCase())).join("");
-  }
-
-  function toInverseCase(str: string) {
-    return str.split("").map((c) => (c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase())).join("");
   }
 
   const actions = [
