@@ -28,7 +28,9 @@
 
 ---
 
-`ObsidianKit` is an open-source, privacy-first web platform containing **88+ browser-native utilities**. Rather than uploading your private documents, receipts, or photos to remote third-party cloud servers, ObsidianKit executes operations directly inside your browser via WebAssembly, Web Workers, and client-side JavaScript.
+> **Status:** Public v0.1.0. The catalog is usable today, while individual tools may vary in browser support and maturity.
+
+`ObsidianKit` is an open-source, privacy-first web platform containing **72 browser-native utilities**. Rather than uploading your private documents, receipts, or photos to remote third-party cloud servers, ObsidianKit executes operations directly inside your browser via WebAssembly, Web Workers, and client-side JavaScript.
 
 ---
 
@@ -97,8 +99,11 @@ ObsidianKit enforces strict automated quality gates on every commit and pull req
 # Run ESLint across codebase
 npm run lint
 
-# Run route and metadata integrity tests (validates 88 routes)
+# Run behavioral unit tests
 npm test
+
+# Validate registered routes and metadata
+npm run test:integrity
 
 # Production build: route prerendering + SEO injection + bundle budget checks
 npm run build

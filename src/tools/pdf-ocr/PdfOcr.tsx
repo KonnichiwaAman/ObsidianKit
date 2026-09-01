@@ -138,7 +138,7 @@ export default function PdfOcr() {
         await worker.terminate();
       }
       if (pdfDocument) {
-        await pdfDocument.destroy();
+        await pdfDocument.loadingTask.destroy();
       }
       setProcessing(false);
     }

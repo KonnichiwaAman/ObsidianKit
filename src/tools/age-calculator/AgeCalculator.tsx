@@ -1,54 +1,5 @@
 import { useMemo, useState } from "react";
-
-interface AgeResult {
-  years: number;
-  months: number;
-  days: number;
-  totalMonths: number;
-  totalWeeks: number;
-  totalDays: number;
-  totalHours: number;
-}
-
-function calculateAgeResult(start: string, end: string): AgeResult | null {
-  const startDate = new Date(start);
-  const endDate = new Date(end);
-
-  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate > endDate) {
-    return null;
-  }
-
-  let years = endDate.getFullYear() - startDate.getFullYear();
-  let months = endDate.getMonth() - startDate.getMonth();
-  let days = endDate.getDate() - startDate.getDate();
-
-  if (days < 0) {
-    months -= 1;
-    const prevMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0);
-    days += prevMonth.getDate();
-  }
-
-  if (months < 0) {
-    years -= 1;
-    months += 12;
-  }
-
-  const timeDiff = endDate.getTime() - startDate.getTime();
-  const totalDays = Math.floor(timeDiff / (1000 * 3600 * 24));
-  const totalWeeks = Math.floor(totalDays / 7);
-  const totalMonths = years * 12 + months;
-  const totalHours = totalDays * 24;
-
-  return {
-    years,
-    months,
-    days,
-    totalMonths,
-    totalWeeks,
-    totalDays,
-    totalHours,
-  };
-}
+import { calculateAgeResult } from "./logic";
 
 export default function AgeCalculator() {
   const [dob, setDob] = useState("");
