@@ -1,124 +1,133 @@
+<div align="center">
+
 # ObsidianKit
 
-[![CI](https://github.com/amandeavor/ObsidianKit/actions/workflows/ci.yml/badge.svg)](https://github.com/amandeavor/ObsidianKit/actions/workflows/ci.yml)
+**Privacy-first, browser-native toolbox for document, image, media, and calculation workflows.**
+
+[**Explore Live App at obsidiankit.me →**](https://obsidiankit.me)
+
+[![Live Deployment](https://img.shields.io/badge/website-obsidiankit.me-000000?style=flat&logo=safari&logoColor=white)](https://obsidiankit.me)
+[![React 19](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript 6](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite 8](https://img.shields.io/badge/Vite-8.0-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS 4](https://img.shields.io/badge/Tailwind-4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/amandeavor/ObsidianKit/ci.yml?branch=main&label=CI)](https://github.com/amandeavor/ObsidianKit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/amandeavor/ObsidianKit?display_name=tag)](https://github.com/amandeavor/ObsidianKit/releases)
-[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-blue.svg)](CONTRIBUTING.md)
 
-ObsidianKit is a privacy-first, browser-native toolbox for PDF, image, media, calculator, and utility workflows.
+<p align="center">
+  <a href="#quickstart">Quickstart</a> •
+  <a href="#tool-catalog">Tool Catalog</a> •
+  <a href="#privacy-architecture">Privacy Architecture</a> •
+  <a href="#quality-pipeline">Quality Pipeline</a> •
+  <a href="#contributing">Contributing</a>
+</p>
 
-Core principles:
+</div>
 
-- Local-first file processing where possible.
-- Fast route-level loading with lazy tool modules.
-- SEO-ready static route generation for categories, tools, and blog content.
-- Explicit user consent gating for analytics and ads.
+---
 
-Use the deployed toolbox at [obsidiankit.me](https://obsidiankit.me).
+`ObsidianKit` is an open-source, privacy-first web platform containing **88+ browser-native utilities**. Rather than uploading your private documents, receipts, or photos to remote third-party cloud servers, ObsidianKit executes operations directly inside your browser via WebAssembly, Web Workers, and client-side JavaScript.
 
-## Project status
+---
 
-ObsidianKit is under active development. The public API and individual tool behavior may evolve before 1.0, but user data should remain local unless a tool explicitly describes an external request.
+## Tool Catalog
 
-See the [changelog](CHANGELOG.md) for release history and the [public issue tracker](https://github.com/amandeavor/ObsidianKit/issues) for planned work.
-
-## Stack
-
-- React 19 + TypeScript 6
-- Vite 8 + Tailwind CSS 4
-- React Router 7
-- Zustand
-- Tooling libraries: pdf-lib, pdfjs-dist, ffmpeg.wasm, tesseract.js, heic2any, mammoth, docx
-
-## Development
-
-Requirements:
-
-- Node.js 20.19 or newer
-- npm 10 or newer
-
-Install dependencies:
-
-```bash
-npm install
+```
+                    ┌──────────────────────────────────────────────┐
+                    │            ObsidianKit Tool Suite            │
+                    └──────────────────────┬───────────────────────┘
+                                           │
+         ┌──────────────────┬──────────────┴─────┬──────────────────┐
+         ▼                  ▼                    ▼                  ▼
+  ┌──────────────┐   ┌──────────────┐     ┌──────────────┐   ┌──────────────┐
+  │  PDF Suite   │   │  Image Lab   │     │ Media Studio │   │ Calculators  │
+  │ Merge, OCR,  │   │ Compress, BG │     │ Audio/Video  │   │  Financial,  │
+  │ Compress, PW │   │ Remove, HEIC │     │ Transcode,   │   │ Health, Math │
+  │    Unlock    │   │  Convert, EXIF│    │ Trim, GIF    │   │    Units     │
+  └──────────────┘   └──────────────┘     └──────────────┘   └──────────────┘
 ```
 
-Run local dev server:
+| Category | Highlights & Included Tools |
+| :--- | :--- |
+| **PDF Tools** | Merge PDF, Compress PDF, PDF to Word, OCR Extraction, Rotate Pages, Unlock/Protect Password, Page Numbering, Metadata Editor. |
+| **Image Lab** | Client-side Background Removal (ONNX WebGPU), HEIC to JPG, WebP Converter, Image Resizer, Lossless Compressor, EXIF Metadata Stripper. |
+| **Media Studio** | Video to GIF converter, Video Trimmer, Audio Transcoder, Video Frame Extractor (powered by `ffmpeg.wasm`). |
+| **Developer Utilities** | JSON Formatter, Base64 Encoder/Decoder, URL Encoder, Regex Tester, QR Code Generator, Password Generator & Entropy Meter. |
+| **Calculators** | Compound Interest, Loan Amortization, Salary Take-Home, Currency Exchange, Unit & Linear Conversion, Scientific Math. |
+
+---
+
+## Privacy Architecture
+
+1. **Zero Server Uploads**: File operations (PDF manipulation, image transcoding, OCR scanning) execute entirely on your machine.
+2. **Local Machine Sandbox**: Sensitive passports, IDs, and financial statements never leave your browser context.
+3. **No Tracking By Default**: Analytics and external scripts are disabled until explicit user consent is granted.
+
+---
+
+## Quickstart
+
+### Prerequisites
+- Node.js `20.19+`
+- npm `10+`
+
+### Local Development Setup
 
 ```bash
+# Clone the repository
+git clone https://github.com/amandeavor/ObsidianKit.git
+cd ObsidianKit
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-## Quality Gates
+---
 
-Lint:
+## Quality Pipeline
+
+ObsidianKit enforces strict automated quality gates on every commit and pull request:
 
 ```bash
+# Run ESLint across codebase
 npm run lint
-```
 
-Integrity tests:
+# Run route and metadata integrity tests (validates 88 routes)
+npm test
 
-```bash
-npm run test
-```
-
-Production build (includes SEO/static generation and bundle budget checks):
-
-```bash
+# Production build: route prerendering + SEO injection + bundle budget checks
 npm run build
-```
 
-Bundle analysis:
-
-```bash
+# Interactive bundle size visualization
 npm run build:analyze
 ```
 
-## Build Pipeline
+---
 
-`npm run build` runs these stages:
-1. Generate route manifest: `public/prerender-routes.json`
-2. Generate SEO assets: `public/robots.txt`, `public/sitemap.xml`
-3. Type check and build with Vite
-4. Inject route-aware static SEO head tags into built HTML pages
-5. Enforce bundle budgets
+## Adding a New Tool
 
-## Privacy and Consent
+1. Create your component under `src/tools/<category>/<YourTool>.tsx`.
+2. Register tool metadata in `src/data/tools.ts`.
+3. Register the lazy import in `src/tools/index.ts`.
+4. Validate the full suite: `npm test && npm run build`.
 
-- File content processing is local-first and runs in the browser for supported tools.
-- Optional analytics and ads are disabled until the user makes a consent choice.
-- Currency conversion and select integrations may make explicit external network requests.
+---
 
-## Repository Notes
+## Community & Governance
 
-- Tool metadata lives in `src/data/tools.ts`.
-- Tool component lazy registry lives in `src/tools/index.ts`.
-- Route/SEO script source of truth is in `scripts/route-manifest.ts`.
+- [Contributing Guide](CONTRIBUTING.md)
+- [Project Roadmap](ROADMAP.md)
+- [Support Guidelines](SUPPORT.md)
+- [Security Policy](SECURITY.md)
+- [Governance Model](GOVERNANCE.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Changelog](CHANGELOG.md)
 
-When adding a new tool, always update:
-1. `src/data/tools.ts`
-2. `src/tools/index.ts`
-3. Tool implementation folder under `src/tools/`
-
-Then run:
-
-```bash
-npm run test && npm run build
-```
-
-## Contributing and maintenance
-
-- [Contributing guide](CONTRIBUTING.md)
-- [Governance and maintainer responsibilities](GOVERNANCE.md)
-- [Roadmap and planned tools](ROADMAP.md)
-- [Support and troubleshooting](SUPPORT.md)
-- [Security policy](SECURITY.md)
-- [Code of conduct](CODE_OF_CONDUCT.md)
-- [Release history](CHANGELOG.md)
-
-Bug reports, tool proposals, accessibility improvements, compatibility fixes, and test coverage are welcome. Major architectural changes should begin with an issue so the approach can be agreed before implementation.
+---
 
 ## License
 
-ObsidianKit is available under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
